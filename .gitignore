@@ -1,0 +1,65 @@
+# ─── Logs ──────────────────────────────────────────────────────────────────────
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─── Tests / QA / Diagnostics ─────────────────────────────────────────────────
+coverage
+test-results
+*.lcov
+junit.xml
+.vitest/
+.playwright/
+playwright-report/
+.cypress-cache/
+cypress/screenshots/
+cypress/videos/
+
+# ─── Dépendances & caches Node ────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+.npm/
+.cache/
+.tmp/
+.vite/
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+*.tsbuildinfo
+
+# ─── Build output (Vite / SSR / Storybook) ────────────────────────────────────
+dist/
+dist-ssr/
+storybook-static/
+
+# ─── Fichiers d’environnement (ne JAMAIS pousser vos secrets) ────────────────
+.env
+.env.*
+!.env.example
+!.env.sample
+.env.local
+.env.*.local
+
+# ─── Éditeurs / IDE ───────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.history/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── Système ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── Plateformes de déploiement ───────────────────────────────────────────────
+.vercel/
+.netlify/
+firebase-debug.log
