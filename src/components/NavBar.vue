@@ -1,6 +1,6 @@
 <template>
   <header class="bg-white border-b">
-    <nav class="max-w-6xl mx-auto px-4 py-3 flex gap-4">
+    <nav class="w-full px-6 lg:px-10 py-3 flex gap-4">
       <router-link to="/" class="font-semibold">🏀 NBA Explore</router-link>
       <router-link to="/players" class="hover:underline">Players</router-link>
       <router-link to="/teams" class="hover:underline">Teams</router-link>
@@ -9,4 +9,5 @@
       <router-link to="/leaders" class="hover:underline">Leaders</router-link>
     </nav>
   </header>
+  
 </template>

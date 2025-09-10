@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "nba-explore",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
