@@ -2,20 +2,20 @@
   <section class="max-w-screen-2xl mx-auto">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
       <div>
-        <h1 class="text-3xl font-extrabold tracking-tight">📅 Games</h1>
-        <p class="text-gray-500">Consulte les matchs par date, filtre par statut ou équipe.</p>
+        <h1 class="font-display text-3xl">📅 Games</h1>
+        <p class="text-slate-300">Consulte les matchs par date, filtre par statut ou équipe.</p>
       </div>
       <div class="flex flex-wrap gap-2">
-        <input v-model="date" type="date" class="border rounded-lg px-3 py-2 text-sm" />
-        <select v-model="status" class="border rounded-lg px-3 py-2 text-sm">
+        <input v-model="date" type="date" class="bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100" />
+        <select v-model="status" class="bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100">
           <option value="">Tous statuts</option>
           <option value="scheduled">Programmé</option>
           <option value="in_progress">En cours</option>
           <option value="final">Terminé</option>
         </select>
         <input v-model.trim="teamQuery" type="search" placeholder="Filtrer équipe (ex: Lakers)"
-               class="border rounded-lg px-3 py-2 text-sm w-48" />
-        <button @click="fetchGames" class="bg-black text-white px-4 py-2 rounded-lg text-sm">
+               class="bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm w-48 text-slate-100 placeholder-slate-400" />
+        <button @click="fetchGames" class="btn-primary text-sm">
           Recharger
         </button>
       </div>
@@ -32,18 +32,18 @@
 
     <div v-else>
       <div class="flex items-center justify-between mb-3">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-slate-400">
           {{ filteredGames.length }} match{{ filteredGames.length > 1 ? 's' : '' }}
           — {{ date }}
         </p>
-        <div class="text-xs text-gray-400">Source: /api/games</div>
+        <div class="text-xs text-slate-500">Source: /api/games</div>
       </div>
 
       <EmptyState v-if="filteredGames.length === 0">Aucun match ne correspond à tes filtres.</EmptyState>
 
-      <div v-else class="overflow-hidden rounded-xl border bg-white">
+      <div v-else class="overflow-hidden rounded-2xl glass">
         <table class="w-full text-sm">
-          <thead class="bg-gray-50 sticky top-0">
+          <thead class="bg-white/5 sticky top-0 text-slate-300">
             <tr class="text-left">
               <th class="p-3">Heure</th>
               <th class="p-3">Domicile</th>
@@ -53,33 +53,33 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="g in filteredGames" :key="g.id" class="border-t">
+            <tr v-for="g in filteredGames" :key="g.id" class="border-t border-white/10 odd:bg-white/0 even:bg-white/5 hover:bg-cyan-500/10 transition">
               <td class="p-3 whitespace-nowrap">{{ g.time }}</td>
               <td class="p-3">
-                <div class="font-medium">{{ g.homeName }}</div>
-                <div class="text-xs text-gray-500">{{ g.homeAbbr }}</div>
+                <div class="font-medium text-slate-100">{{ g.homeName }}</div>
+                <div class="text-xs text-slate-400">{{ g.homeAbbr }}</div>
               </td>
               <td class="p-3">
-                <div class="font-medium">{{ g.awayName }}</div>
-                <div class="text-xs text-gray-500">{{ g.awayAbbr }}</div>
+                <div class="font-medium text-slate-100">{{ g.awayName }}</div>
+                <div class="text-xs text-slate-400">{{ g.awayAbbr }}</div>
               </td>
               <td class="p-3 font-semibold">
                 <span v-if="g.homeScore != null && g.awayScore != null">
                   {{ g.homeScore }} - {{ g.awayScore }}
                 </span>
-                <span v-else class="text-gray-400">—</span>
+                <span v-else class="text-slate-500">—</span>
               </td>
               <td class="p-3">
                 <span
                   :class="[
                     'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border',
-                    g.status === 'final' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    g.status === 'in_progress' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-gray-50 text-gray-700 border-gray-200'
+                    g.status === 'final' ? 'bg-emerald-500/15 text-emerald-200 border-emerald-400/30' :
+                    g.status === 'in_progress' ? 'bg-amber-500/15 text-amber-200 border-amber-400/30' :
+                    'bg-white/5 text-slate-300 border-white/10'
                   ]"
                 >
                   <span class="w-1.5 h-1.5 rounded-full"
-                        :class="g.status === 'final' ? 'bg-emerald-500' : g.status === 'in_progress' ? 'bg-amber-500' : 'bg-gray-400'"></span>
+                        :class="g.status === 'final' ? 'bg-emerald-400' : g.status === 'in_progress' ? 'bg-amber-400' : 'bg-slate-400'"></span>
                   {{ statusLabel(g.status) }}
                 </span>
               </td>

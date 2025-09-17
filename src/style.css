@@ -1,12 +1,35 @@
 @import "tailwindcss";
 
-/* Reset des styles Vite qui contraignaient la largeur */
-:root { color-scheme: light; }
+/* Force dark theme look */
+:root { color-scheme: dark; }
 
 /* Mise en page globale (plein écran) */
 html, body, #app { height: 100%; }
 body {
   margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 600px at 20% 20%, #0b0f1a 0%, #090d16 40%, #000 100%);
+  color: #e5e7eb;
+}
+
+/* Reusable UI tokens */
+.glass {
+  @apply bg-white/5 border border-white/10 backdrop-blur-md;
+}
+.btn-primary {
+  @apply px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-600 text-white font-semibold ring-1 ring-cyan-400/30 hover:ring-cyan-400/60 transition duration-250 transform hover:scale-[1.02];
+}
+.btn-ghost {
+  @apply px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition duration-250;
+}
+.card-hover {
+  @apply transition duration-250 hover:ring-1 hover:ring-cyan-400/50 hover:scale-[1.02] shadow-[0_0_0_rgba(0,240,255,0)] hover:shadow-[0_0_15px_rgba(0,240,255,0.35)];
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 2px;
 }
 
 /* Option : thème clair par défaut (on gère tout avec Tailwind ensuite) */

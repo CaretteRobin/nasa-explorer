@@ -1,14 +1,24 @@
 <template>
-  <div class="min-h-screen w-full bg-gray-50 text-gray-900">
+  <div class="min-h-screen relative text-slate-100">
+    <StarBackground />
     <NavBar />
-    <!-- Full width with comfortable padding; pages decide containers -->
-    <main class="w-full px-6 py-6 lg:px-10">
+    <main class="mx-auto max-w-screen-2xl px-6 py-8">
       <slot />
     </main>
+    <footer class="border-t border-white/10 py-8">
+      <div class="mx-auto max-w-screen-2xl px-6 text-sm text-slate-400 flex items-center justify-between">
+        <div>© {{ new Date().getFullYear() }} NASA Explorer</div>
+        <div class="flex items-center gap-4">
+          <a href="https://api.nasa.gov" target="_blank" rel="noreferrer" class="hover:text-cyan-300">NASA APIs</a>
+          <a href="https://images.nasa.gov/" target="_blank" rel="noreferrer" class="hover:text-cyan-300">NASA Images Library</a>
+        </div>
+      </div>
+    </footer>
   </div>
   
 </template>
 
 <script setup>
 import NavBar from '../components/NavBar.vue'
+import StarBackground from '../components/StarBackground.vue'
 </script>

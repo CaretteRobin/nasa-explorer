@@ -1,5 +1,5 @@
 <template>
-  <div :class="['animate-pulse rounded-lg bg-gray-100', sizeClass]" />
+  <div :class="['animate-pulse rounded-lg bg-white/10', sizeClass]" />
 </template>
 
 <script setup>
@@ -11,4 +11,3 @@ const sizeClass = {
   lg: 'h-16 w-full',
 }[props.size] || 'h-10 w-full'
 </script>
-

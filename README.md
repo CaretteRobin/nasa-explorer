@@ -1,6 +1,6 @@
-# NBA Explore — Vue 3 + Vite + Tailwind
+# NASA Explorer — Vue 3 + Vite + Tailwind
 
-Front-end pour explorer les données NBA (matchs, joueurs, leaders, équipes dérivées, classements).
+Explorateur d'images et de données NASA: APOD, photos des rovers Mars, EPIC Earth, NASA Image Library, NEO, Space Weather (DONKI) et Earth Imagery. Dark mode futuriste, UI glass, responsive.
 
 ## Démarrage
 
@@ -14,45 +14,42 @@ pnpm dev
 
 ## Configuration
 
-- Dev: un proxy Vite évite les soucis CORS.
-  - `VITE_API_BASE=/api` (par défaut dans `.env`)
-- Prod: soit reverse-proxy, soit base absolue
-  - `VITE_API_BASE=https://api.server.nbaapi.com`
+- Variables d'env (voir `.env.example`):
+  - `VITE_NASA_API_BASE=https://api.nasa.gov`
+  - `VITE_NASA_IMAGES_BASE=https://images-api.nasa.gov`
+  - `VITE_NASA_API_KEY=...` (dans `.env.local`, ne pas commiter)
+  - Flags: `VITE_FEATURE_EPIC`, `VITE_FEATURE_NEO`, `VITE_FEATURE_DONKI`
 
-Voir `vite.config.js` → `server.proxy['/api']`.
+## Endpoints utilisés
 
-## Endpoints consommés (Swagger)
-
-- `GET /api/games`: données de matchs (params: `date?`, `season?` si supporté)
-- `GET /api/playertotals`: totaux joueurs (params: `season?`, `team?`… selon API)
-- `GET /api/playersadvancedstats`: stats avancées (optionnel)
-- `GET /api/playershotchart`: shot chart (optionnel)
-
-## Schéma interne (normalisation)
-
-- Normalisation côté client pour tolérer `snake_case`/`camelCase` et champs manquants:
-  - Games → `{ id, date, time, homeName, homeAbbr, awayName, awayAbbr, homeScore, awayScore, status }`
-  - PlayerTotals → `{ id, name, teamName, teamAbbr, position, pts, reb, ast, fg3Pct }`
-  - Teams (dérivées) → `{ id, name, abbr, city, conference, division }`
-
-Voir `src/api/normalize.js`.
+- APOD: `/planetary/apod` (params: `date` ou `start_date`/`end_date`, `thumbs=true`, `hd=true`)
+- Mars Rovers: `/mars-photos/api/v1/rovers`, `/mars-photos/api/v1/rovers/{rover}/photos` (params: `sol`|`earth_date`, `camera`, `page`)
+- EPIC: `/EPIC/api/{natural|enhanced}/all`, `/EPIC/api/{mode}/date/{YYYY-MM-DD}` (+ archive URL pour images)
+- NASA Image Library: `https://images-api.nasa.gov/search` (params: `q`, `media_type`, `year_start`, `year_end`, `page`) + `/asset/{nasa_id}`
+- NEO: `/neo/rest/v1/feed` et `/neo/rest/v1/feed/today`
+- DONKI: `/DONKI/{FLR|CME|GST}` (params: `startDate`, `endDate`)
+- Earth Imagery: `/planetary/earth/imagery` (params: `lat`, `lon`, `date`, `dim`)
 
 ## Pages
 
-- Home: hero full‑bleed, état API, aperçu des matchs du jour
-- Games: liste du jour/sélection date, filtres statut/équipe
-- Players: recherche, filtre équipe/position, pagination locale sur playertotals
-- Leaders: calcul client (PTS/REB/AST/3P%), tri + limite
-- Teams: dérivées depuis playertotals, lien vers Players filtré
-- Standings: calculés localement à partir de games (W/L, %, diff)
+- Home / Mission Control: APOD du jour, panneaux d’accès rapide (Mars/EPIC/Library/NEO)
+- APOD Gallery: archive par dates, miniatures, modale HD, favoris
+- Mars Rover Photos: filtres rover/sol/date/cam, pagination
+- EPIC Earth: Natural/Enhanced, dates disponibles, grille d’images
+- NASA Image Library: recherche texte + filtres, pagination
+- NEO Dashboard: today/range 7j, tri/pha badges
+- Space Weather (DONKI): timeline par type et dates
+- Earth Imagery: image satellite par lat/lon/date/dim
+- Favorites: gestion locale (export/import JSON)
 
 ## États & robustesse
 
-- Client HTTP unique `src/api/http.js` (timeout 12s, logs, x-request-id)
-- Composants d’état réutilisables: `LoadingSkeleton`, `ErrorAlert`, `EmptyState`, `ApiStatusPill`
-- Gestion d’erreurs homogène + messages lisibles
+- Client HTTP `src/api/nasa.js` avec normalisation d’erreurs
+- Cache mémoire simple pour endpoints invariants (APOD range, EPIC dates)
+- Gestion d’erreurs lisibles, loaders uniformes, images lazy
 
-## Notes DX
+## Notes UI/DX
 
-- Tailwind (plugin vite) et mise en page plein écran
-- Containers larges `max-w-screen-2xl` et hero full‑bleed
+- Thème sombre futuriste: dégradés anthracite, accents cyan/fuchsia
+- Starfield discret en fond (parallaxe subtile)
+- Glassmorphism maîtrisé, transitions 200–300ms, A11y AA
