@@ -2,13 +2,13 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">APOD Gallery</h1>
-        <p class="text-slate-300">Browse Astronomy Picture of the Day by date range</p>
+        <h1 class="font-display text-3xl">Galerie APOD</h1>
+        <p class="text-slate-300">Parcourir l’image astronomique du jour sur une plage de dates</p>
       </div>
       <div class="flex items-center gap-2">
         <input type="date" v-model="from" class="bg-white/10 border border-white/10 rounded px-3 py-2 placeholder-slate-400 text-slate-100" />
         <input type="date" v-model="to" class="bg-white/10 border border-white/10 rounded px-3 py-2 placeholder-slate-400 text-slate-100" />
-        <button @click="load" class="btn-primary">Load</button>
+        <button @click="load" class="btn-primary">Charger</button>
       </div>
     </div>
 
@@ -28,8 +28,8 @@
           <div class="font-medium text-slate-100 truncate">{{ item.title }}</div>
           <div class="text-xs text-slate-400">{{ item.date }}</div>
           <div class="mt-2 flex items-center gap-3">
-            <button class="text-cyan-300 hover:text-cyan-200 text-sm" @click="open(item)">Details</button>
-            <button class="text-pink-300 hover:text-pink-200 text-sm" @click="toggleFav(item)">{{ isFav(item) ? 'Unfavorite' : 'Favorite' }}</button>
+            <button class="text-cyan-300 hover:text-cyan-200 text-sm" @click="open(item)">Détails</button>
+            <button class="text-pink-300 hover:text-pink-200 text-sm" @click="toggleFav(item)">{{ isFav(item) ? 'Retirer des favoris' : 'Ajouter aux favoris' }}</button>
           </div>
         </div>
       </div>

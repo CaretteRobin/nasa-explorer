@@ -2,18 +2,18 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">EPIC Earth</h1>
-        <p class="text-slate-300">Natural or Enhanced; browse by date</p>
+        <h1 class="font-display text-3xl">EPIC – Terre</h1>
+        <p class="text-slate-300">Mode naturel ou amélioré ; parcourir les dates disponibles</p>
       </div>
       <div class="flex items-center gap-2">
         <select v-model="mode" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
-          <option value="natural">Natural</option>
-          <option value="enhanced">Enhanced</option>
+          <option value="natural">Naturel</option>
+          <option value="enhanced">Amélioré</option>
         </select>
         <select v-model="date" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
           <option v-for="d in dates" :key="d" :value="d">{{ d }}</option>
         </select>
-        <button @click="load" class="btn-primary">Load</button>
+        <button @click="load" class="btn-primary">Charger</button>
       </div>
     </div>
     <div v-if="isDemo" class="mb-4 text-xs text-slate-400">Mode démo activé: données EPIC simulées.</div>

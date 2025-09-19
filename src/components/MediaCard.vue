@@ -2,7 +2,7 @@
   <div class="group rounded-2xl glass overflow-hidden hover:border-cyan-400/40 transition duration-250 shadow-sm card-hover">
     <div class="aspect-video overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
       <img v-if="thumb" :src="thumb" :alt="title" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" />
-      <div v-else class="w-full h-full flex items-center justify-center text-slate-400">No preview</div>
+      <div v-else class="w-full h-full flex items-center justify-center text-slate-400">Aperçu indisponible</div>
     </div>
     <div class="p-4">
       <div class="text-slate-100 font-medium truncate">{{ title }}</div>

@@ -2,7 +2,7 @@
   <section class="max-w-screen-2xl mx-auto">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
       <div>
-        <h1 class="font-display text-3xl">📅 Games</h1>
+        <h1 class="font-display text-3xl">📅 Matchs</h1>
         <p class="text-slate-300">Consulte les matchs par date, filtre par statut ou équipe.</p>
       </div>
       <div class="flex flex-wrap gap-2">
@@ -36,7 +36,7 @@
           {{ filteredGames.length }} match{{ filteredGames.length > 1 ? 's' : '' }}
           — {{ date }}
         </p>
-        <div class="text-xs text-slate-500">Source: /api/games</div>
+        <div class="text-xs text-slate-500">Source : /api/games</div>
       </div>
 
       <EmptyState v-if="filteredGames.length === 0">Aucun match ne correspond à tes filtres.</EmptyState>

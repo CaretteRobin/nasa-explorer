@@ -2,15 +2,15 @@
   <section>
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="font-display text-3xl">Favorites</h1>
-        <p class="text-slate-300">Your saved APODs and library items</p>
+        <h1 class="font-display text-3xl">Favoris</h1>
+        <p class="text-slate-300">Vos APOD et éléments de la médiathèque sauvegardés</p>
       </div>
       <div class="flex items-center gap-2">
-        <button @click="exportJson" class="px-3 py-2 rounded bg-white/10 hover:bg-white/20">Export</button>
+        <button @click="exportJson" class="px-3 py-2 rounded bg-white/10 hover:bg-white/20">Exporter</button>
         <label class="px-3 py-2 rounded bg-white/10 hover:bg-white/20 cursor-pointer">
-          Import<input type="file" class="hidden" accept="application/json" @change="importJson" />
+          Importer<input type="file" class="hidden" accept="application/json" @change="importJson" />
         </label>
-        <button @click="clear" class="px-3 py-2 rounded bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Clear</button>
+        <button @click="clear" class="px-3 py-2 rounded bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Tout effacer</button>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
           <span>•</span>
           <span>{{ it.date }}</span>
         </template>
-        <button @click="remove(it)" class="text-rose-300 hover:text-rose-200 text-sm">Remove</button>
+        <button @click="remove(it)" class="text-rose-300 hover:text-rose-200 text-sm">Retirer</button>
       </MediaCard>
     </div>
   </section>

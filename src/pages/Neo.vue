@@ -2,15 +2,15 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">Near-Earth Objects</h1>
-        <p class="text-slate-300">Today or 7-day range; sort and highlight hazardous objects</p>
+        <h1 class="font-display text-3xl">Objets géocroiseurs</h1>
+        <p class="text-slate-300">Vue du jour ou sur 7 jours, avec mise en avant des objets potentiellement dangereux</p>
       </div>
       <div class="flex items-center gap-2">
         <select v-model="mode" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
-          <option value="today">Today</option>
-          <option value="range">Range (7 days)</option>
+          <option value="today">Aujourd’hui</option>
+          <option value="range">Période (7 jours)</option>
         </select>
-        <button @click="load" class="btn-primary">Load</button>
+        <button @click="load" class="btn-primary">Charger</button>
       </div>
     </div>
 
@@ -20,19 +20,19 @@
       <table class="min-w-full text-sm">
         <thead class="bg-white/5 text-slate-300">
           <tr>
-            <th class="px-3 py-2 text-left">Name</th>
+            <th class="px-3 py-2 text-left">Nom</th>
             <th class="px-3 py-2">PHA</th>
             <th class="px-3 py-2">Mag</th>
-            <th class="px-3 py-2">Size (m)</th>
-            <th class="px-3 py-2">Velocity (km/s)</th>
-            <th class="px-3 py-2">Miss Dist (km)</th>
+            <th class="px-3 py-2">Taille (m)</th>
+            <th class="px-3 py-2">Vitesse (km/s)</th>
+            <th class="px-3 py-2">Distance de passage (km)</th>
             <th class="px-3 py-2">Date</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="o in rows" :key="o.id" :class="[o.hazardous ? 'bg-rose-500/10' : 'odd:bg-white/0 even:bg-white/5', 'hover:bg-cyan-500/10 transition']">
             <td class="px-3 py-2">{{ o.name }}</td>
-            <td class="px-3 py-2 text-center"><span :class="['px-2 py-0.5 rounded text-xs', o.hazardous ? 'bg-rose-500/20 text-rose-200' : 'bg-emerald-500/20 text-emerald-200']">{{ o.hazardous ? 'Yes' : 'No' }}</span></td>
+            <td class="px-3 py-2 text-center"><span :class="['px-2 py-0.5 rounded text-xs', o.hazardous ? 'bg-rose-500/20 text-rose-200' : 'bg-emerald-500/20 text-emerald-200']">{{ o.hazardous ? 'Oui' : 'Non' }}</span></td>
             <td class="px-3 py-2 text-center">{{ o.mag }}</td>
             <td class="px-3 py-2 text-center">{{ o.size }}</td>
             <td class="px-3 py-2 text-center">{{ o.vel }}</td>

@@ -9,8 +9,8 @@
       <div class="mx-auto max-w-screen-2xl px-6 text-sm text-slate-400 flex items-center justify-between">
         <div>© {{ new Date().getFullYear() }} NASA Explorer</div>
         <div class="flex items-center gap-4">
-          <a href="https://api.nasa.gov" target="_blank" rel="noreferrer" class="hover:text-cyan-300">NASA APIs</a>
-          <a href="https://images.nasa.gov/" target="_blank" rel="noreferrer" class="hover:text-cyan-300">NASA Images Library</a>
+          <a href="https://api.nasa.gov" target="_blank" rel="noreferrer" class="hover:text-cyan-300">API NASA</a>
+          <a href="https://images.nasa.gov/" target="_blank" rel="noreferrer" class="hover:text-cyan-300">Bibliothèque d’images NASA</a>
         </div>
       </div>
     </footer>

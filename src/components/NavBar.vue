@@ -14,12 +14,12 @@
         <router-link :class="linkClass('/apod')" to="/apod">APOD</router-link>
         <router-link :class="linkClass('/mars')" to="/mars">Mars</router-link>
         <router-link :class="linkClass('/epic')" to="/epic">EPIC</router-link>
-        <router-link :class="linkClass('/library')" to="/library">Library</router-link>
+        <router-link :class="linkClass('/library')" to="/library">Médiathèque</router-link>
         <router-link :class="linkClass('/neo')" to="/neo">NEO</router-link>
-        <router-link :class="linkClass('/space-weather')" to="/space-weather">Space Weather</router-link>
-        <router-link :class="linkClass('/earth')" to="/earth">Earth</router-link>
-        <router-link :class="linkClass('/favorites')" to="/favorites">Favorites</router-link>
-        <router-link :class="linkClass('/about')" to="/about">About</router-link>
+        <router-link :class="linkClass('/space-weather')" to="/space-weather">Météo spatiale</router-link>
+        <router-link :class="linkClass('/earth')" to="/earth">Terre</router-link>
+        <router-link :class="linkClass('/favorites')" to="/favorites">Favoris</router-link>
+        <router-link :class="linkClass('/about')" to="/about">À propos</router-link>
       </nav>
     </div>
   </header>

@@ -2,8 +2,8 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">Mars Rover Photos</h1>
-        <p class="text-slate-300">Filter by rover, sol or Earth date, camera</p>
+        <h1 class="font-display text-3xl">Photos des rovers martiens</h1>
+        <p class="text-slate-300">Filtrer par rover, sol ou date terrestre, ainsi que par caméra</p>
       </div>
       <div class="flex items-center gap-2">
         <select v-model="rover" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
@@ -12,10 +12,10 @@
         <input type="number" v-model.number="sol" placeholder="Sol" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-28 text-slate-100" />
         <input type="date" v-model="earth" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100" />
         <select v-model="camera" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
-          <option value="">All cams</option>
+          <option value="">Toutes caméras</option>
           <option v-for="c in cameras" :key="c" :value="c">{{ c }}</option>
         </select>
-        <button @click="load(1)" class="btn-primary">Load</button>
+        <button @click="load(1)" class="btn-primary">Charger</button>
       </div>
     </div>
 

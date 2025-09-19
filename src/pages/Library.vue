@@ -2,24 +2,24 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">NASA Image & Video Library</h1>
-        <p class="text-slate-300">Search images/videos/audio with filters</p>
+        <h1 class="font-display text-3xl">Bibliothèque d’images et de vidéos NASA</h1>
+        <p class="text-slate-300">Rechercher des images, vidéos ou sons avec des filtres</p>
       </div>
       <div class="flex items-center gap-2">
-        <input v-model="q" placeholder="Search (e.g., nebula)" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-64 text-slate-100 placeholder-slate-400" />
+        <input v-model="q" placeholder="Recherche (ex : nébuleuse)" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-64 text-slate-100 placeholder-slate-400" />
         <select v-model="media" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
-          <option value="image,video">Images & Videos</option>
+          <option value="image,video">Images & vidéos</option>
           <option value="image">Images</option>
-          <option value="video">Videos</option>
+          <option value="video">Vidéos</option>
           <option value="audio">Audio</option>
         </select>
-        <input v-model.number="from" type="number" placeholder="From" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-28 text-slate-100" />
-        <input v-model.number="to" type="number" placeholder="To" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-28 text-slate-100" />
-        <button @click="load(1)" class="btn-primary">Search</button>
+        <input v-model.number="from" type="number" placeholder="Depuis" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-28 text-slate-100" />
+        <input v-model.number="to" type="number" placeholder="Jusqu’à" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-28 text-slate-100" />
+        <button @click="load(1)" class="btn-primary">Rechercher</button>
       </div>
     </div>
 
-    <div v-if="error" class="mb-4"><ErrorState :message="'Erreur Library'" :details="error" /></div>
+    <div v-if="error" class="mb-4"><ErrorState :message="'Erreur médiathèque'" :details="error" /></div>
     <template v-else-if="loading">
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <SkeletonScan v-for="i in 8" :key="i" height="12rem" />
@@ -33,7 +33,7 @@
             <span>•</span>
             <span>{{ (it.data?.[0]?.date_created || '').slice(0,10) }}</span>
           </template>
-          <a class="text-cyan-300 hover:text-cyan-200 text-sm" :href="detailUrl(it)" target="_blank" rel="noreferrer">Open</a>
+          <a class="text-cyan-300 hover:text-cyan-200 text-sm" :href="detailUrl(it)" target="_blank" rel="noreferrer">Ouvrir</a>
         </MediaCard>
       </div>
       <div class="mt-6 flex justify-center">

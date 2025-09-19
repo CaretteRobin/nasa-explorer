@@ -2,15 +2,15 @@
   <section>
     <div class="mb-6 flex flex-wrap items-end gap-3 justify-between">
       <div>
-        <h1 class="font-display text-3xl">Earth Imagery</h1>
-        <p class="text-slate-300">Landsat/Modis at given lat/lon and date</p>
+        <h1 class="font-display text-3xl">Imagerie terrestre</h1>
+        <p class="text-slate-300">Images Landsat/Modis pour une latitude/longitude et une date</p>
       </div>
       <div class="flex items-center gap-2">
-        <input v-model.number="lat" type="number" placeholder="Lat" step="0.0001" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-32 text-slate-100" />
-        <input v-model.number="lon" type="number" placeholder="Lon" step="0.0001" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-32 text-slate-100" />
+        <input v-model.number="lat" type="number" placeholder="Lat." step="0.0001" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-32 text-slate-100" />
+        <input v-model.number="lon" type="number" placeholder="Lon." step="0.0001" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-32 text-slate-100" />
         <input v-model="date" type="date" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100" />
-        <input v-model.number="dim" type="number" step="0.01" placeholder="Dim (km/pixel)" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-40 text-slate-100" />
-        <button @click="load" class="btn-primary">Load</button>
+        <input v-model.number="dim" type="number" step="0.01" placeholder="Résolution (km/pixel)" class="bg-white/10 border border-white/10 rounded px-3 py-2 w-40 text-slate-100" />
+        <button @click="load" class="btn-primary">Charger</button>
       </div>
     </div>
     <div v-if="isDemo" class="mb-4 text-xs text-slate-400">Mode démo activé: image d'illustration chargée.</div>

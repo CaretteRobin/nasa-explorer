@@ -9,28 +9,28 @@
         <p class="text-slate-300 text-sm mt-1">Parcourez l’image du jour par plages de dates. Ouvrez les détails et ajoutez vos images préférées aux favoris.</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4">
-        <h2 class="font-display text-xl">Mars Rovers</h2>
+        <h2 class="font-display text-xl">Rovers martiens</h2>
         <p class="text-slate-300 text-sm mt-1">Photos prises par les rovers martiens. Filtrez par rover (Curiosity, etc.), sol (jour martien), date terrestre et caméra.</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4">
-        <h2 class="font-display text-xl">EPIC — DSCOVR Earth</h2>
+        <h2 class="font-display text-xl">EPIC — Terre (DSCOVR)</h2>
         <p class="text-slate-300 text-sm mt-1">Images de la Terre prises depuis le point L1. Choisissez le mode (<em>natural</em> ou <em>enhanced</em>) puis une date disponible.</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4">
-        <h2 class="font-display text-xl">NASA Image Library</h2>
-        <p class="text-slate-300 text-sm mt-1">Recherchez des images/vidéos/audio par mots‑clés, type et années. Les liens ouvrent la page officielle de l’item.</p>
+        <h2 class="font-display text-xl">Bibliothèque d’images NASA</h2>
+        <p class="text-slate-300 text-sm mt-1">Recherchez des images, vidéos ou sons par mots-clés, type et années. Les liens ouvrent la page officielle de l’élément.</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4">
-        <h2 class="font-display text-xl">NEO — Near‑Earth Objects</h2>
+        <h2 class="font-display text-xl">NEO — Objets géocroiseurs</h2>
         <p class="text-slate-300 text-sm mt-1">Aperçu des objets proches de la Terre pour aujourd’hui ou sur 7 jours. Mise en avant des objets potentiellement dangereux.</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4">
-        <h2 class="font-display text-xl">DONKI — Space Weather</h2>
+        <h2 class="font-display text-xl">DONKI — Météo spatiale</h2>
         <p class="text-slate-300 text-sm mt-1">Activité solaire : éruptions (FLR), éjections de masse coronale (CME), orages géomagnétiques (GST).</p>
       </div>
       <div class="rounded-xl bg-white/5 border border-white/10 p-4 md:col-span-2">
-        <h2 class="font-display text-xl">Earth Imagery</h2>
-        <p class="text-slate-300 text-sm mt-1">Images satellite (Landsat/Modis) pour une latitude/longitude et une date. Astuce: laissez le champ date vide pour obtenir une image proche disponible.</p>
+        <h2 class="font-display text-xl">Imagerie terrestre</h2>
+        <p class="text-slate-300 text-sm mt-1">Images satellite (Landsat/Modis) pour une latitude/longitude et une date. Astuce : laissez le champ date vide pour obtenir une image disponible proche.</p>
       </div>
     </div>
 
