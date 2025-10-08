@@ -1,34 +1,96 @@
 <template>
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-cyan-400/10">
-    <div class="mx-auto max-w-screen-2xl px-6 h-16 flex items-center justify-between">
-      <router-link to="/" class="inline-flex items-center gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">
-          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm1 3.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm.75 3.75a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0V14h-2a.75.75 0 0 1 0-1.5h2V10a.75.75 0 0 1 .75-.75Z"/>
-        </svg>
-        <div class="font-display text-xl tracking-wide">
-          <span class="text-white">NASA</span><span class="text-cyan-400">Explorer</span>
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-black/40 border-b border-cyan-400/10 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+    <div class="mx-auto max-w-screen-2xl px-6 h-20 flex items-center justify-between">
+      <router-link to="/" class="inline-flex items-center gap-3 magnetic-area">
+        <div class="magnetic-content inline-flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.65)]">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm1 3.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm.75 3.75a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0V14h-2a.75.75 0 0 1 0-1.5h2V10a.75.75 0 0 1 .75-.75Z"/>
+          </svg>
+          <div class="font-display text-2xl tracking-[0.25em] uppercase">
+            <span class="text-white">NASA</span><span class="text-cyan-400">Explorer</span>
+          </div>
         </div>
       </router-link>
 
-      <nav class="hidden md:flex items-center gap-2">
-        <router-link :class="linkClass('/apod')" to="/apod">APOD</router-link>
-        <router-link :class="linkClass('/mars')" to="/mars">Mars</router-link>
-        <router-link :class="linkClass('/epic')" to="/epic">EPIC</router-link>
-        <router-link :class="linkClass('/library')" to="/library">Médiathèque</router-link>
-        <router-link :class="linkClass('/neo')" to="/neo">NEO</router-link>
-        <router-link :class="linkClass('/space-weather')" to="/space-weather">Météo spatiale</router-link>
-        <router-link :class="linkClass('/earth')" to="/earth">Terre</router-link>
-        <router-link :class="linkClass('/favorites')" to="/favorites">Favoris</router-link>
-        <router-link :class="linkClass('/about')" to="/about">À propos</router-link>
+      <nav class="hidden md:flex items-center gap-4 relative"
+           ref="navContainer">
+        <div class="nav-indicator" v-if="indicator.width" :style="indicatorStyle"></div>
+        <router-link
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          class="nav-link"
+          :class="{ 'is-active': isActive(item.path) }"
+          :ref="(el) => setLinkRef(el, item.path)">
+          <span class="uppercase tracking-[0.2em]">{{ item.label }}</span>
+        </router-link>
       </nav>
     </div>
   </header>
 </template>
 
 <script setup>
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
-const base = 'px-3 py-2 rounded-md text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition duration-250 ring-1 ring-transparent hover:ring-cyan-400/50 shadow-[0_0_0_rgba(0,240,255,0)] hover:shadow-[0_0_12px_rgba(0,240,255,0.35)]'
-const active = 'bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-400/60 shadow-[0_0_16px_rgba(0,240,255,0.45)]'
-const linkClass = (path) => [base, route.path.startsWith(path) && active]
+
+const navItems = [
+  { path: '/apod', label: 'APOD' },
+  { path: '/mars', label: 'Mars' },
+  { path: '/epic', label: 'EPIC' },
+  { path: '/library', label: 'Médiathèque' },
+  { path: '/neo', label: 'NEO' },
+  { path: '/space-weather', label: 'Météo' },
+  { path: '/earth', label: 'Terre' },
+  { path: '/mission-control', label: 'Mission Control' },
+  { path: '/favorites', label: 'Favoris' },
+  { path: '/about', label: 'À propos' },
+]
+
+const navContainer = ref(null)
+const indicator = reactive({ width: 0, translate: 0 })
+const linkRefs = new Map()
+
+const setLinkRef = (el, path) => {
+  if (el) linkRefs.set(path, el)
+  else linkRefs.delete(path)
+  updateIndicator()
+}
+
+const isActive = (path) => route.path.startsWith(path)
+
+const updateIndicator = () => {
+  nextTick(() => {
+    const activeItem = navItems.find((item) => isActive(item.path))
+    const el = activeItem ? linkRefs.get(activeItem.path) : null
+    if (!el || !navContainer.value) {
+      indicator.width = 0
+      indicator.translate = 0
+      return
+    }
+    const parentRect = navContainer.value.getBoundingClientRect()
+    const rect = el.getBoundingClientRect()
+    indicator.width = rect.width
+    indicator.translate = rect.left - parentRect.left
+  })
+}
+
+const indicatorStyle = computed(() => ({
+  width: `${indicator.width}px`,
+  transform: `translateX(${indicator.translate}px) translateZ(0)`
+}))
+
+const handleResize = () => updateIndicator()
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  updateIndicator()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+watch(() => route.fullPath, () => updateIndicator())
 </script>

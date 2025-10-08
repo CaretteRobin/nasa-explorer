@@ -10,6 +10,7 @@ const SpaceWeather = () => import('../pages/SpaceWeather.vue')
 const Earth = () => import('../pages/Earth.vue')
 const Favorites = () => import('../pages/Favorites.vue')
 const About = () => import('../pages/About.vue')
+const MissionControl = () => import('../pages/MissionControl.vue')
 
 const routes = [
   { path: '/', name: 'home', component: Home },
@@ -20,6 +21,7 @@ const routes = [
   { path: '/neo', name: 'neo', component: Neo },
   { path: '/space-weather', name: 'space-weather', component: SpaceWeather },
   { path: '/earth', name: 'earth', component: Earth },
+  { path: '/mission-control', name: 'mission-control', component: MissionControl },
   { path: '/favorites', name: 'favorites', component: Favorites },
   { path: '/about', name: 'about', component: About },
 ]
