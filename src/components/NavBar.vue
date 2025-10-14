@@ -43,17 +43,26 @@ const navItems = [
   { path: '/neo', label: 'NEO' },
   { path: '/space-weather', label: 'Météo' },
   { path: '/earth', label: 'Terre' },
-  { path: '/mission-control', label: 'Mission Control' },
+  { path: '/mission-control', label: 'MissionControl' },
   { path: '/favorites', label: 'Favoris' },
-  { path: '/about', label: 'À propos' },
+  { path: '/about', label: 'APropos' },
 ]
 
 const navContainer = ref(null)
 const indicator = reactive({ width: 0, translate: 0 })
 const linkRefs = new Map()
 
+const resolveEl = (el) => {
+  if (!el) return null
+  if (Array.isArray(el)) return resolveEl(el[0])
+  if (el.$el) return el.$el
+  if (el.$?.subTree?.el) return el.$.subTree.el
+  return el
+}
+
 const setLinkRef = (el, path) => {
-  if (el) linkRefs.set(path, el)
+  const domEl = resolveEl(el)
+  if (domEl) linkRefs.set(path, domEl)
   else linkRefs.delete(path)
   updateIndicator()
 }
@@ -63,13 +72,14 @@ const isActive = (path) => route.path.startsWith(path)
 const updateIndicator = () => {
   nextTick(() => {
     const activeItem = navItems.find((item) => isActive(item.path))
-    const el = activeItem ? linkRefs.get(activeItem.path) : null
-    if (!el || !navContainer.value) {
+    const el = activeItem ? resolveEl(linkRefs.get(activeItem.path)) : null
+    const container = resolveEl(navContainer.value)
+    if (!el || !container || typeof el.getBoundingClientRect !== 'function' || typeof container.getBoundingClientRect !== 'function') {
       indicator.width = 0
       indicator.translate = 0
       return
     }
-    const parentRect = navContainer.value.getBoundingClientRect()
+    const parentRect = container.getBoundingClientRect()
     const rect = el.getBoundingClientRect()
     indicator.width = rect.width
     indicator.translate = rect.left - parentRect.left

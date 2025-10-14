@@ -4,6 +4,7 @@
       <div>
         <h1 class="font-display text-3xl">Photos des rovers martiens</h1>
         <p class="text-slate-300">Filtrer par rover, sol ou date terrestre, ainsi que par caméra</p>
+        <p v-if="nasaOffline" class="mt-2 text-xs uppercase tracking-[0.3em] text-cyan-200/80">Flux NASA indisponible, affichage des archives démo.</p>
       </div>
       <div class="flex items-center gap-2">
         <select v-model="rover" class="bg-white/10 border border-white/10 rounded px-3 py-2 text-slate-100">
@@ -41,10 +42,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { fetchRovers, fetchRoverPhotos } from '../api/nasa'
 import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 import ErrorState from '../components/ui/ErrorState.vue'
 import Pagination from '../components/ui/Pagination.vue'
+import { demoRoverPhotos, demoRovers } from '../lib/demoData'
+import { useStatusStore } from '../stores/status'
 
 const route = useRoute(); const router = useRouter()
 const rovers = ref([])
@@ -59,9 +63,14 @@ const loading = ref(false)
 const error = ref('')
 
 const cameras = computed(() => ['FHAZ','RHAZ','MAST','CHEMCAM','NAVCAM','PANCAM','MINITES'])
+const statusStore = useStatusStore()
+const { nasaOffline } = storeToRefs(statusStore)
 
 onMounted(async () => {
-  try { rovers.value = await fetchRovers() } catch {}
+  try { rovers.value = await fetchRovers() } catch (e) {
+    console.warn('Rovers fetch failed, using demo manifest', e)
+  }
+  if (!rovers.value.length) rovers.value = demoRovers
   load(page.value)
 })
 
@@ -75,6 +84,14 @@ async function load(p = 1) {
     }
     router.replace({ query: { rover: rover.value, sol: sol.value, earth: earth.value, camera: camera.value, page: p } })
     photos.value = await fetchRoverPhotos({ rover: rover.value, sol: sol.value, earth_date: earth.value, camera: camera.value, page: p })
-  } catch (e) { error.value = e.message || String(e) } finally { loading.value = false }
+    if (!photos.value.length) {
+      const fallback = demoRoverPhotos[rover.value] || []
+      if (fallback.length) photos.value = fallback
+    }
+  } catch (e) {
+    console.warn('Rover photos fetch failed, using demo data', e)
+    error.value = ''
+    photos.value = demoRoverPhotos[rover.value] || []
+  } finally { loading.value = false }
 }
 </script>

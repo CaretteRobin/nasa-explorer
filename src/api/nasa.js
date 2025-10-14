@@ -1,5 +1,16 @@
 import axios from 'axios'
 import { withCache } from './cache'
+import { useStatusStore } from '../stores/status'
+import {
+  demoApod,
+  demoApodRange,
+  demoRovers,
+  demoRoverPhotos,
+  demoEpicDates,
+  demoNeoHistory,
+  demoSolarEvents,
+  demoEarthImagery,
+} from '../lib/demoData'
 
 const base = import.meta.env.VITE_NASA_API_BASE || 'https://api.nasa.gov'
 const imagesBase = import.meta.env.VITE_NASA_IMAGES_BASE || 'https://images-api.nasa.gov'
@@ -10,14 +21,55 @@ const demo = String(import.meta.env.VITE_DEMO_MODE || 'false') === 'true'
 const http = axios.create({ baseURL: base, timeout })
 const httpImages = axios.create({ baseURL: imagesBase, timeout })
 
-http.interceptors.response.use((r) => r, (e) => Promise.reject(normalizeErr(e)))
-httpImages.interceptors.response.use((r) => r, (e) => Promise.reject(normalizeErr(e)))
+const getStatusStore = () => {
+  try {
+    return useStatusStore()
+  } catch (err) {
+    return null
+  }
+}
+
+const markOffline = (payload) => {
+  const store = getStatusStore()
+  store?.setOffline(payload)
+}
+
+const markOnline = () => {
+  const store = getStatusStore()
+  store?.setOnline()
+}
+
+const shouldUseDemo = () => {
+  const store = getStatusStore()
+  return demo || Boolean(store?.nasaOffline)
+}
+
+const buildDemoNeoFeed = () => {
+  const feed = {}
+  const counts = demoNeoHistory.history
+  const today = new Date()
+  counts.forEach((count, index) => {
+    const day = new Date(today.getTime() - (counts.length - 1 - index) * 24 * 60 * 60 * 1000)
+    const key = day.toISOString().slice(0, 10)
+    feed[key] = Array.from({ length: count }, (_, i) => ({
+      id: `demo-neo-${key}-${i}`,
+      name: `DEMO ${key} #${i + 1}`,
+      is_potentially_hazardous_asteroid: i % 2 === 0,
+      close_approach_data: [],
+    }))
+  })
+  return feed
+}
+
+http.interceptors.response.use((r) => { markOnline(); return r }, (e) => Promise.reject(normalizeErr(e)))
+httpImages.interceptors.response.use((r) => { markOnline(); return r }, (e) => Promise.reject(normalizeErr(e)))
 
 function normalizeErr(err) {
   const status = err.response?.status
   const data = err.response?.data
   const message = data?.error?.message || data?.msg || err.message || 'Request failed'
   console.error('HTTP error', { status, message, url: err.config?.url, params: err.config?.params })
+  markOffline({ status, message, endpoint: err.config?.url })
   return { status, message, endpoint: err.config?.url, params: err.config?.params, data }
 }
 
@@ -25,64 +77,63 @@ const cached = withCache()
 
 // APOD
 export async function fetchApod(params = {}) {
-  if (demo) {
-    return {
-      date: '2021-06-01',
-      title: 'Pillars of Creation (Demo)',
-      url: 'https://apod.nasa.gov/apod/image/1501/POcosmos1024.jpg',
-      media_type: 'image',
-      explanation: 'Démo APOD pour développement hors-ligne.',
-    }
+  if (shouldUseDemo()) {
+    return demoApod
   }
   const p = { thumbs: true, hd: true, api_key: apiKey, ...params }
-  const { data } = await http.get('/planetary/apod', { params: p })
-  return data
+  try {
+    const { data } = await http.get('/planetary/apod', { params: p })
+    return data
+  } catch (error) {
+    return demoApod
+  }
 }
 
 export async function fetchApodRange(startDate, endDate) {
+  if (shouldUseDemo()) {
+    return demoApodRange
+  }
   return cached(`apod:${startDate}:${endDate}`, async () => {
-    if (demo) {
-      return [
-        { date: '2021-06-01', title: 'Pillars of Creation (Demo)', url: 'https://apod.nasa.gov/apod/image/1501/POcosmos1024.jpg', media_type: 'image' },
-        { date: '2021-05-31', title: 'Orion Nebula (Demo)', url: 'https://apod.nasa.gov/apod/image/1901/OrionNebula_Trinh_960.jpg', media_type: 'image' },
-        { date: '2021-05-30', title: 'Milky Way Arch (Demo)', url: 'https://apod.nasa.gov/apod/image/2105/MWarch_Tafreshi_2048.jpg', media_type: 'image' },
-      ]
+    try {
+      const { data } = await http.get('/planetary/apod', { params: { start_date: startDate, end_date: endDate, thumbs: true, api_key: apiKey } })
+      const arr = Array.isArray(data) ? data : [data]
+      return arr.sort((a, b) => new Date(b.date) - new Date(a.date))
+    } catch (error) {
+      return demoApodRange
     }
-    const { data } = await http.get('/planetary/apod', { params: { start_date: startDate, end_date: endDate, thumbs: true, api_key: apiKey } })
-    // Ensure array sorted desc by date
-    const arr = Array.isArray(data) ? data : [data]
-    return arr.sort((a,b) => new Date(b.date) - new Date(a.date))
   })
 }
 
 // Mars Rovers
 export async function fetchRovers() {
+  if (shouldUseDemo()) {
+    return demoRovers
+  }
   return cached('rovers', async () => {
-    if (demo) {
-      return [
-        { name: 'Curiosity', status: 'active' },
-        { name: 'Opportunity', status: 'complete' },
-        { name: 'Spirit', status: 'complete' },
-      ]
+    try {
+      const { data } = await http.get('/mars-photos/api/v1/rovers', { params: { api_key: apiKey } })
+      return data?.rovers || []
+    } catch (error) {
+      return demoRovers
     }
-    const { data } = await http.get('/mars-photos/api/v1/rovers', { params: { api_key: apiKey } })
-    return data?.rovers || []
   })
 }
 
 export async function fetchRoverPhotos({ rover, sol, earth_date, camera, page = 1 }) {
-  if (demo) {
-    return [
-      { id: 1, img_src: 'https://mars.nasa.gov/system/resources/detail_files/25066_PIA25179-16.jpg', rover: { name: 'Curiosity' }, camera: { name: 'NAVCAM', full_name: 'Navigation Camera' }, sol: 1000, earth_date: '2015-05-30' },
-      { id: 2, img_src: 'https://mars.nasa.gov/system/resources/detail_files/25088_PIA25330-16.jpg', rover: { name: 'Curiosity' }, camera: { name: 'MAST', full_name: 'Mast Camera' }, sol: 1000, earth_date: '2015-05-30' },
-    ]
+  if (shouldUseDemo()) {
+    return demoRoverPhotos[rover] || []
   }
   const params = { api_key: apiKey, page }
   if (sol) params.sol = sol
   if (earth_date) params.earth_date = earth_date
   if (camera) params.camera = camera
-  const { data } = await http.get(`/mars-photos/api/v1/rovers/${encodeURIComponent(rover)}/photos`, { params })
-  return data?.photos || []
+  try {
+    const { data } = await http.get(`/mars-photos/api/v1/rovers/${encodeURIComponent(rover)}/photos`, { params })
+    const photos = data?.photos || []
+    return photos.length ? photos : (demoRoverPhotos[rover] || [])
+  } catch (error) {
+    return demoRoverPhotos[rover] || []
+  }
 }
 
 // EPIC
@@ -95,13 +146,16 @@ async function withRetry(fn, times = 2, delay = 600) {
 }
 
 export async function fetchEpicDates(mode = 'natural') {
+  if (shouldUseDemo()) {
+    return demoEpicDates
+  }
   return cached(`epic:dates:${mode}`, async () => {
-    if (demo) {
-      return ['2019-06-01', '2019-05-31', '2019-05-30']
+    try {
+      const { data } = await withRetry(() => http.get(`/EPIC/api/${mode}/all`, { params: { api_key: apiKey } }))
+      return (data || []).map((d) => (typeof d === 'string' ? d : d.date)).filter(Boolean)
+    } catch (error) {
+      return demoEpicDates
     }
-    const { data } = await withRetry(() => http.get(`/EPIC/api/${mode}/all`, { params: { api_key: apiKey } }))
-    // returns array of objects with date fields or dates; normalize strings
-    return (data || []).map((d) => (typeof d === 'string' ? d : d.date)).filter(Boolean)
   })
 }
 
@@ -112,66 +166,111 @@ export function epicImageUrl(mode, date, image) {
 }
 
 export async function fetchEpicByDate(mode, date) {
-  if (demo) {
+  if (shouldUseDemo()) {
     return [
       { identifier: 'demo-1', caption: 'Terre (démo)', date: `${date} 00:00:00`, image: 'epic_1b_20190601000001' },
       { identifier: 'demo-2', caption: 'Terre (démo)', date: `${date} 00:01:54`, image: 'epic_1b_20190601000154' },
     ]
   }
-  const { data } = await withRetry(() => http.get(`/EPIC/api/${mode}/date/${date}`, { params: { api_key: apiKey } }))
-  return data || []
+  try {
+    const { data } = await withRetry(() => http.get(`/EPIC/api/${mode}/date/${date}`, { params: { api_key: apiKey } }))
+    return data || []
+  } catch (error) {
+    return [
+      { identifier: 'demo-1', caption: 'Terre (démo)', date: `${date} 00:00:00`, image: 'epic_1b_20190601000001' },
+      { identifier: 'demo-2', caption: 'Terre (démo)', date: `${date} 00:01:54`, image: 'epic_1b_20190601000154' },
+    ]
+  }
 }
 
 // NASA Image & Video Library
 export async function searchLibrary({ q, media_type, year_start, year_end, page = 1 }) {
   const params = { q, media_type, year_start, year_end, page }
-  const { data } = await httpImages.get('/search', { params })
-  const collection = data?.collection
-  const items = collection?.items || []
-  const meta = { total: Number(collection?.metadata?.total_hits || 0), href: collection?.href }
-  return { items, meta }
+  try {
+    const { data } = await httpImages.get('/search', { params })
+    const collection = data?.collection
+    const items = collection?.items || []
+    const meta = { total: Number(collection?.metadata?.total_hits || 0), href: collection?.href }
+    return { items, meta }
+  } catch (error) {
+    return { items: [], meta: { total: 0 } }
+  }
 }
 
 export async function fetchLibraryAsset(nasa_id) {
-  const { data } = await httpImages.get(`/asset/${encodeURIComponent(nasa_id)}`)
-  const items = data?.collection?.items || []
-  return items.map((i) => i.href)
+  try {
+    const { data } = await httpImages.get(`/asset/${encodeURIComponent(nasa_id)}`)
+    const items = data?.collection?.items || []
+    return items.map((i) => i.href)
+  } catch (error) {
+    return []
+  }
 }
 
 // NEO
 export async function fetchNeoToday() {
-  const { data } = await http.get('/neo/rest/v1/feed/today', { params: { detailed: true, api_key: apiKey } })
-  return data
+  if (shouldUseDemo()) {
+    const today = new Date().toISOString().slice(0, 10)
+    const count = demoNeoHistory.today
+    const entries = Array.from({ length: count }, (_, i) => ({
+      id: `demo-neo-today-${i}`,
+      name: `DEMO NEO ${i + 1}`,
+      is_potentially_hazardous_asteroid: true,
+      close_approach_data: [],
+    }))
+    return { near_earth_objects: { [today]: entries } }
+  }
+  try {
+    const { data } = await http.get('/neo/rest/v1/feed/today', { params: { detailed: true, api_key: apiKey } })
+    return data
+  } catch (error) {
+    const today = new Date().toISOString().slice(0, 10)
+    const count = demoNeoHistory.today
+    const entries = Array.from({ length: count }, (_, i) => ({
+      id: `demo-neo-today-${i}`,
+      name: `DEMO NEO ${i + 1}`,
+      is_potentially_hazardous_asteroid: true,
+      close_approach_data: [],
+    }))
+    return { near_earth_objects: { [today]: entries } }
+  }
 }
 
 export async function fetchNeoRange(start_date, end_date) {
-  const { data } = await http.get('/neo/rest/v1/feed', { params: { start_date, end_date, api_key: apiKey } })
-  return data
+  if (shouldUseDemo()) {
+    return { near_earth_objects: buildDemoNeoFeed() }
+  }
+  try {
+    const { data } = await http.get('/neo/rest/v1/feed', { params: { start_date, end_date, api_key: apiKey } })
+    return data
+  } catch (error) {
+    return { near_earth_objects: buildDemoNeoFeed() }
+  }
 }
 
 // DONKI (space weather)
 export async function fetchDonki(type, startDate, endDate) {
-  if (demo) {
-    return [
-      { activityID: 'DEMO-FLR-1', beginTime: '2021-06-01T12:00Z', classType: 'M1.0', instruments: [{ displayName: 'GOES' }] },
-      { activityID: 'DEMO-CME-1', startTime: '2021-06-01T11:00Z', note: 'CME demo', instruments: [{ displayName: 'SOHO/LASCO' }] },
-    ]
+  if (shouldUseDemo()) {
+    return demoSolarEvents
   }
-  const { data } = await http.get(`/DONKI/${type}`, { params: { startDate, endDate, api_key: apiKey } })
-  return data || []
+  try {
+    const { data } = await http.get(`/DONKI/${type}`, { params: { startDate, endDate, api_key: apiKey } })
+    return data || []
+  } catch (error) {
+    return demoSolarEvents
+  }
 }
 
 // Earth Imagery
 export async function fetchEarthImagery({ lat, lon, date, dim }) {
+  if (shouldUseDemo()) {
+    return demoEarthImagery
+  }
   const params = { lat, lon, date, dim, api_key: apiKey }
   try {
-    if (demo) {
-      return { url: 'https://epic.gsfc.nasa.gov/archive/natural/2019/06/01/png/epic_1b_20190601000001.png', date: '2019-06-01' }
-    }
     const { data } = await http.get('/planetary/earth/imagery', { params })
     return data
   } catch (e) {
-    // Fallback: discover nearest available date via assets then retry
     try {
       const { data: assets } = await http.get('/planetary/earth/assets', { params: { lon, lat, begin: date || undefined, api_key: apiKey } })
       const nearest = assets?.results?.[0]?.date?.slice(0, 10)
@@ -180,6 +279,6 @@ export async function fetchEarthImagery({ lat, lon, date, dim }) {
         return data
       }
     } catch {}
-    throw e
+    return demoEarthImagery
   }
 }

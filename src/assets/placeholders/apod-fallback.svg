@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <radialGradient id="bg-stars" cx="50%" cy="48%" r="70%">
+      <stop offset="0%" stop-color="#123352"/>
+      <stop offset="45%" stop-color="#081226"/>
+      <stop offset="100%" stop-color="#02040d"/>
+    </radialGradient>
+    <radialGradient id="nebula" cx="30%" cy="35%" r="45%">
+      <stop offset="0%" stop-color="#35d0ff" stop-opacity="0.9"/>
+      <stop offset="65%" stop-color="#5d2cff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg-stars)"/>
+  <g fill="#ffffff" opacity="0.6">
+    <circle cx="180" cy="120" r="2.2"/>
+    <circle cx="340" cy="210" r="1.6"/>
+    <circle cx="520" cy="90" r="1.8"/>
+    <circle cx="820" cy="160" r="2.4"/>
+    <circle cx="970" cy="300" r="1.4"/>
+    <circle cx="1080" cy="140" r="1.2"/>
+    <circle cx="260" cy="380" r="1.8"/>
+    <circle cx="600" cy="260" r="1.8"/>
+    <circle cx="760" cy="420" r="1.5"/>
+    <circle cx="420" cy="480" r="2.1"/>
+    <circle cx="150" cy="600" r="1.2"/>
+    <circle cx="980" cy="620" r="1.7"/>
+    <circle cx="640" cy="700" r="2"/>
+    <circle cx="360" cy="690" r="1.9"/>
+    <circle cx="1060" cy="520" r="1.5"/>
+  </g>
+  <ellipse cx="560" cy="420" rx="420" ry="300" fill="url(#nebula)" opacity="0.8"/>
+  <path d="M280 550 C440 420 620 460 820 340" stroke="#5de1ff" stroke-width="8" stroke-linecap="round" stroke-opacity="0.55" fill="none"/>
+  <path d="M300 520 C500 380 720 420 920 300" stroke="#ff63c5" stroke-width="5" stroke-linecap="round" stroke-opacity="0.45" fill="none"/>
+  <text x="50%" y="88%" font-family="Orbitron, 'Segoe UI', sans-serif" font-size="48" fill="#9be7ff" letter-spacing="0.4em" text-anchor="middle" opacity="0.65">SIMULATION</text>
+</svg>

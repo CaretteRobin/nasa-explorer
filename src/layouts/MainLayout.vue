@@ -1,8 +1,22 @@
 <template>
   <div class="min-h-screen relative text-slate-100 overflow-hidden">
     <StarBackground />
+    <div class="cosmic-grid"></div>
+    <div class="floating-orb orb-one"></div>
+    <div class="floating-orb orb-two"></div>
     <div class="aurora-band"></div>
     <NavBar />
+    <transition name="warp">
+      <div v-if="nasaOffline" class="relative z-30 border-y border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 via-transparent to-indigo-600/10 backdrop-blur-md">
+        <div class="mx-auto max-w-screen-2xl px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="text-sm text-slate-200">
+            <strong class="text-cyan-200">Service NASA en maintenance&nbsp;:</strong>
+            Les flux officiels sont gelés suite à l’arrêt des mises à jour NASA. Nous affichons des données de démonstration pour maintenir l’expérience.
+          </div>
+          <a href="https://api.nasa.gov" target="_blank" rel="noreferrer" class="text-xs uppercase tracking-[0.3em] text-cyan-300 hover:text-white">En savoir plus</a>
+        </div>
+      </div>
+    </transition>
     <div class="fixed top-4 right-6 z-30 flex items-center gap-3">
       <AudioControl />
     </div>
@@ -28,9 +42,13 @@
 
 <script setup>
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import NavBar from '../components/NavBar.vue'
 import StarBackground from '../components/StarBackground.vue'
 import AudioControl from '../components/AudioControl.vue'
+import { useStatusStore } from '../stores/status'
 
 const year = computed(() => new Date().getFullYear())
+const statusStore = useStatusStore()
+const { nasaOffline } = storeToRefs(statusStore)
 </script>

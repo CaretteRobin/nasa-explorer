@@ -1,5 +1,12 @@
 <template>
-  <div ref="holder" class="w-full h-full min-h-[340px] lg:min-h-[460px] rounded-3xl overflow-hidden">
+  <div class="relative">
+    <div class="absolute inset-0 blur-[140px] bg-gradient-to-r from-cyan-300/10 via-transparent to-indigo-500/10 pointer-events-none"></div>
+    <div
+      ref="holder"
+      class="relative w-full h-full min-h-[520px] md:min-h-[640px] lg:min-h-[780px] rounded-[2.75rem] overflow-hidden shadow-[0_50px_160px_rgba(56,189,248,0.28)] border border-cyan-400/10 bg-[#040b17]/70">
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-400/16 via-transparent to-indigo-500/18"></div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#02060f] via-transparent to-transparent"></div>
+    </div>
   </div>
 </template>
 
@@ -185,19 +192,19 @@ const init = () => {
   renderer.domElement.style.display = 'block'
   if ('outputColorSpace' in renderer) {
     renderer.outputColorSpace = THREE.SRGBColorSpace
-  } else {
-    renderer.outputEncoding = THREE.sRGBEncoding
   }
   holder.value.appendChild(renderer.domElement)
 
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x020a16, 0.0008)
 
-  camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 800)
-  camera.position.set(0, 28, 160)
+  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
+  camera.position.set(0, 24, 168)
 
   world = new THREE.Group()
   scene.add(world)
+
+  world.scale.set(1.08, 1.08, 1.08)
 
   const earth = createEarth()
   world.add(earth)

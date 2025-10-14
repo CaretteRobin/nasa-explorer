@@ -6,6 +6,7 @@
       <p class="max-w-3xl text-slate-300">
         Visualise l’activité autour de la Terre : station spatiale, météo solaire, objets proches et missions en cours. Les données sont synchronisées avec les services publics de la NASA.
       </p>
+      <p v-if="nasaOffline" class="text-xs uppercase tracking-[0.3em] text-cyan-200/80">Certaines données proviennent de scénarios de démonstration durant l’arrêt des mises à jour.</p>
     </header>
 
     <div class="grid gap-8 xl:grid-cols-[minmax(0,1.2fr),minmax(0,0.8fr)] items-start">
@@ -138,8 +139,10 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import MissionControlScene from '../components/mission/MissionControlScene.vue'
 import { fetchDonki, fetchEpicDates, fetchNeoRange, fetchRovers } from '../api/nasa'
+import { useStatusStore } from '../stores/status'
 
 const telemetry = ref({
   neoCount: 0,
@@ -148,6 +151,8 @@ const telemetry = ref({
   solarEvents: [],
   activeRovers: 0,
 })
+const statusStore = useStatusStore()
+const { nasaOffline } = storeToRefs(statusStore)
 
 const neoSparkline = computed(() => {
   const history = telemetry.value.neoHistory || []

@@ -4,6 +4,7 @@
       <div>
         <h1 class="font-display text-3xl">Galerie APOD</h1>
         <p class="text-slate-300">Parcourir l’image astronomique du jour sur une plage de dates</p>
+        <p v-if="nasaOffline" class="mt-2 text-xs uppercase tracking-[0.3em] text-cyan-200/80">Mode démo&nbsp;: les images proviennent d’une sélection locale.</p>
       </div>
       <div class="flex items-center gap-2">
         <input type="date" v-model="from" class="bg-white/10 border border-white/10 rounded px-3 py-2 placeholder-slate-400 text-slate-100" />
@@ -52,11 +53,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { fetchApodRange } from '../api/nasa'
 import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 import ErrorState from '../components/ui/ErrorState.vue'
 import Modal from '../components/ui/Modal.vue'
 import { useFavorites } from '../stores/favorites'
+import { useStatusStore } from '../stores/status'
 
 const route = useRoute(); const router = useRouter()
 const today = new Date().toISOString().slice(0,10)
@@ -69,6 +72,8 @@ const error = ref('')
 const show = ref(false)
 const current = ref(null)
 const fav = useFavorites(); fav.load()
+const statusStore = useStatusStore()
+const { nasaOffline } = storeToRefs(statusStore)
 
 async function load() {
   try {

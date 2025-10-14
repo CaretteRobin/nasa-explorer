@@ -3,8 +3,15 @@
     <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 md:p-12">
       <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-indigo-600/20"></div>
       <div class="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      <div class="hero-spectral-ring"></div>
+      <div class="hero-comet"></div>
+      <div class="hero-grid-overlay"></div>
       <div class="relative grid gap-10 lg:grid-cols-[minmax(0,1fr),minmax(280px,360px)]">
         <div class="space-y-6">
+          <div v-if="nasaOffline" class="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-xs uppercase tracking-[0.35em] text-cyan-200/80">
+            <span class="h-2 w-2 rounded-full bg-cyan-300 animate-ping"></span>
+            <span>Mode démo activé</span>
+          </div>
           <div class="flex items-center gap-4">
             <div class="relative h-16 w-16 shrink-0">
               <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" class="h-full w-full">
@@ -136,9 +143,11 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { fetchApod, fetchRovers, fetchEpicDates, fetchNeoToday } from '../api/nasa'
 import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 import ErrorState from '../components/ui/ErrorState.vue'
+import { useStatusStore } from '../stores/status'
 
 const apod = ref(null)
 const loadingApod = ref(false)
@@ -146,6 +155,8 @@ const errorApod = ref('')
 const rovers = ref([])
 const epicDates = ref([])
 const neoh = ref(0)
+const statusStore = useStatusStore()
+const { nasaOffline } = storeToRefs(statusStore)
 
 onMounted(async () => {
   try { loadingApod.value = true; apod.value = await fetchApod() } catch (e) { errorApod.value = e.message || String(e) } finally { loadingApod.value = false }
