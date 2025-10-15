@@ -12,7 +12,7 @@
 | Cadre | 1 h dédiée **en fin de séance** tout au long de la période (date de rendu : **avant le 30 octobre**). |
 | Frameworks suggérés | **CSS** : UIkit, PureCSS, Bulma, Skeleton, Milligram, Tailwind CSS.<br>**Web** : Svelte, Vue.<br>**Desktop** : NeutralinoJS, ElectronJS. |
 | API suggérées | NBA, NHTSA, Bandsintown, Open Movie DB. Nous avons volontairement exploré un autre référentiel public (NASA) pour varier les notions de résilience et d’expérience immersive. |
-| Livrables | Archive `.zip` avec code source, **README** complet, **quickstart.pdf** (mini tutoriel du framework utilisé). |
+| Livrables | Archive `.zip` avec code source, **README** complet, **quickstart.pdf** (mini tutoriel du framework utilisé). Toute la documentation est regroupée dans `docs/` (captures et quickstart en .md & .pdf). |
 | Évaluation | 12 pts : qualité du code & richesse techno. 8 pts : qualité de la documentation (clarté, illustrations, vocabulaire). |
 
 ### Pourquoi la NASA ?
@@ -139,7 +139,10 @@ src/
 ├─ layouts/            # MainLayout (bandeau offline + audio toggle)
 ├─ pages/              # Vue pages (Home, Apod, Mars, Epic, Neo, SpaceWeather, Earth, Favorites)
 ├─ stores/             # Pinia (favorites, status, observatory)
-└─ style.css           # tokens globaux, animations, HUD neon
+├─ style.css           # tokens globaux, animations, HUD neon
+└─ docs/
+   ├─ screens/        # captures pour le README
+   └─ quickstart.md/.pdf  # tutoriel framework (livrable officiel)
 ```
 
 - **AudioControl** : oscillateurs Web Audio (drone triangle + souffle cabine + bip télémétrie).
