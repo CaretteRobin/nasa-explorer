@@ -1,171 +1,206 @@
-# 🚀 NASA Explorer — Immersion spatiale en Vue 3
+# 🚀 NASA Explorer — Side Project Frameworks & Données
 
-> Interface futuriste pour explorer les données publiques de la NASA, même lorsque les services officiels sont gelés. Approche « resilient-first » : expériences holographiques, fallback automatiques, et une migration complète vers Earthdata GIBS.
-
----
-
-## 🛰️ Panorama du projet
-
-| Module                | Contenu temps-réel / fallback | Détails clés |
-|-----------------------|-------------------------------|--------------|
-| **Home / MissionControl** | APOD, rovers, EPIC, NEO – badging “démo” si NASA down | Hero animé (anneau spectral, comète), HUD néon, scène 3D Three.js responsive |
-| **APOD Gallery**      | Récupération par date, cache local, placeholders cosmique | Modale HD, favoris, label “Cache/Simulation” |
-| **Mars Rover Photos** | Navigation sol/date, roue de secours multi-rovers | Retours auto de date (sol-1) + images fallback stylisées |
-| **EPIC Earth**        | Mode NASA `natural`/`enhanced` + tuiles GIBS | Aperçu daté, lien direct archive |
-| **NASA Image Library**| Recherche plein texte `images-api.nasa.gov` | Filtres media type, année, vignette responsive |
-| **NEO Radar**         | Feed `feed/today` et range 7j | Badge « potentiellement dangereux » |
-| **Space Weather**     | Timeline DONKI (CME, FLR, GST) | Typographie HUD, badges instruments |
-| **Earth Imagery**     | Migration totale vers **GIBS WMTS** | MapLibre/Leaflet ready (tuiles XYZ) |
-| **Favorites**         | Persistance locale + export JSON | UX hors-ligne |
+> Application immersive réalisée dans le cadre du **side project hebdomadaire** : 1 h par séance consacrée à l’exploration d’un framework et d’une API de données. Nous avons choisi de pousser l’expérience dans l’espace avec les jeux de données publics de la NASA.
 
 ---
 
-## 🧭 Contexte NASA 2025
+## 1. Contexte pédagogique
 
-- **Shutdown fédéral** : depuis le 1er octobre 2025, plusieurs endpoints NASA (APOD, Mars Photos, DONKI, etc.) ne sont plus rafraîchis. Attendez-vous à des `5xx`, timeouts ou payloads vides. 
-- **Earth API** : l’ancienne API `planetary/earth/*` est **archivée**. La NASA recommande désormais **Earthdata GIBS** (WMTS/XYZ, sans clé API).
-- **Réponse du projet** :
-  - Intercepteurs HTTP qui détectent l’échec, basculent le store `status` en mode démo, et servent des datasets simulés + placeholders XXL.
-  - UX transparente : bandeau global, badges “Mode démo activé”, transitions warp, audio d’ambiance.
-  - Cache local (IndexedDB/localStorage) pour APOD/Mars : restauration immédiate même hors-ligne.
+| Élément | Détail |
+|---------|--------|
+| Objectif | Découvrir / approfondir un **framework d’interface web** en binôme, via une application d’exploration de données. |
+| Cadre | 1 h dédiée **en fin de séance** tout au long de la période (date de rendu : **avant le 30 octobre**). |
+| Frameworks suggérés | **CSS** : UIkit, PureCSS, Bulma, Skeleton, Milligram, Tailwind CSS.<br>**Web** : Svelte, Vue.<br>**Desktop** : NeutralinoJS, ElectronJS. |
+| API suggérées | NBA, NHTSA, Bandsintown, Open Movie DB. Nous avons volontairement exploré un autre référentiel public (NASA) pour varier les notions de résilience et d’expérience immersive. |
+| Livrables | Archive `.zip` avec code source, **README** complet, **quickstart.pdf** (mini tutoriel du framework utilisé). |
+| Évaluation | 12 pts : qualité du code & richesse techno. 8 pts : qualité de la documentation (clarté, illustrations, vocabulaire). |
 
----
-
-## ⚙️ Stack & outils
-
-- **Vue 3** (SFCs, `<script setup>`), **Vite**, **Pinia**, **Vue Router**
-- **Tailwind CSS** + pipeline PostCSS
-- **Three.js** pour la scène orbitale (MissionControl)
-- **Axios** + client maison `withCache` + `fetchWithRetry` (timeouts, exponentiel backoff)
-- **Assets** : shaders personnalisés, placeholders SVG (APOD/Mars/Earth), bruit procédural, grilles holographiques
+### Pourquoi la NASA ?
+Le shutdown fédéral d’octobre 2025 perturbe plusieurs API officielles. Ce contexte permet :
+- d’expérimenter des **fallbacks automatiques**,
+- de concevoir une **UX transparente** malgré l’indisponibilité des données,
+- de documenter un cas réel de migration d’API (Earth → GIBS WMTS).
 
 ---
 
-## 🚨 Résilience & fallback
+## 2. Frameworks et ressources mobilisés
 
-### 1. Stratégie APOD
-```ts
-const { data, fallback } = await getApod();
-// fallback === false | "cache" | "simulation"
+| Catégorie | Choix retenu | Pourquoi |
+|-----------|--------------|----------|
+| Framework web | **Vue 3** (Composition API) | Composants réactifs, transitions natives (`<transition>`), intégration Pinia. |
+| Framework CSS | **Tailwind CSS** | Tokens utilitaires, design “glass & neon”, réactivité mobile rapide. |
+| Visualisation 3D | **Three.js** | Scène orbitale en temps réel pour MissionControl. |
+| Gestion d’état | **Pinia** | Stores `status` (mode démo) & `observatory` (widgets). |
+| HTTP | **Axios + client custom** | Retries, timeout, fallback, logging normalisé. |
+| Illustrations | SVG génératifs | Placeholders APOD / Mars / Earth en mode simulation. |
+
+> À noter : le README inclut également les guides d’introduction officiels à **Vue** et **Svelte**, conformément à la note de cadrage (cf. §10).
+
+---
+
+## 3. Aperçu visuel
+
+| Home hero | Mission Control | Mobile nav | Galerie APOD |
+|-----------|----------------|------------|--------------|
+| ![Home hero](docs/screens/home-hero.png) | ![Mission Control](docs/screens/mission-control.png) | ![Navigation mobile](docs/screens/mobile-nav.png) | ![APOD](docs/screens/apod-gallery.png) |
+
+Highlights UI :
+- nav néon avec underline dynamique, mode mobile (bouton “MENU”), badges démo,
+- hero holographique (anneau spectral rotatif, comète animée, grille conique),
+- MissionControl : globe 3D responsive + halo volumétrique + orbites animées,
+- placeholders illustrés pour les fallback (APOD, Mars, Earth).
+
+---
+
+## 4. Fonctionnalités principales
+
+1. **Dashboard d’accueil** : APOD du jour, panels rovers/EPIC/NEO, hero animé.
+2. **MissionControl** : scène 3D Three.js, état des systèmes (NEO, EPIC, rovers, météo solaire), toggle audio synthétique.
+3. **APOD Gallery** : navigation par plage de dates, modale HD, favoris, gestion fallback cache/simulation.
+4. **Mars Rover Explorer** : filtres (rover, sol, date, caméra), pagination, fallback multi-rovers.
+5. **EPIC Earth** : dates `natural/enhanced`, aperçu, lien vers archives, migration GIBS.
+6. **NASA Library Search** : recherche plein texte, filtres media type, année, pagination.
+7. **NEO Radar** : synthèse `/feed/today` + sparkline 7 jours.
+8. **Space Weather (DONKI)** : timeline par type (CME, FLR, GST) avec badges instruments.
+9. **Favorites** : stockage local, export/import JSON.
+10. **Responsive design** : nav mobile dédiée, layout fluide (0 ≤ width ≤ desktop).
+
+Chaque page consultable sur mobile via le bouton d’action “MENU” (affiche un panneau en plein écran). Les contenus exploitent des grilles Tailwind responsive (`grid-cols-1`, `lg:grid-cols-*`).
+
+---
+
+## 5. Données & API NASA
+
+Malgré la recommandation initiale (NBA, NHTSA, Bandsintown, OMDb), nous avons exploré l’écosystème NASA :
+
+| Domaine | Endpoint principal | Notes shutdown |
+|---------|--------------------|----------------|
+| APOD | `/planetary/apod` | Retry + fallback cache/simulation. |
+| Mars | `/mars-photos/api/v1/rovers` + `/photos` | Descente date + images démo. |
+| EPIC | `/EPIC/api/{mode}` | Cache des dates, fallback dataset. |
+| NEO | `/neo/rest/v1/feed` | Reconstruction synthétique 7 jours. |
+| DONKI | `/DONKI/{type}` | Événements simulés si indispo. |
+| Library | `https://images-api.nasa.gov/search` | Gestion d’erreurs gracieuse. |
+| Earth imagery | **GIBS WMTS** | `https://gibs-{a-c}.earthdata.nasa.gov/...`.
+
+> Message officiel NASA (oct. 2025) : « *Due to the lapse in federal government funding, NASA is not updating this website...* ». Le store `status` active un mode démo (bandeau + badges) à la moindre erreur réseau.
+
+---
+
+## 6. Installation & lancement
+
+### Pré-requis
+- Node.js ≥ 18
+- npm (ou pnpm/yarn)
+
+### Étapes
+```bash
+npm install
+cp .env.example .env.local     # renseigner la clé NASA + options GIBS
+npm run dev                    # http://localhost:5173
 ```
-- `fetchWithRetry` (3 tentatives, timeout 8s, backoff x2).
-- Cache local (`localStorage` / `withCache`) pour la dernière APOD valide.
-- Placeholders `apod-fallback.svg` si aucune donnée n’est disponible.
-- Badges "Simulation" + message UX.
 
-### 2. Mars Rover Photos
-- Descente automatique `earth_date - 1` si la date est vide.
-- Fallback multi-rovers (`demoRoverPhotos`) illustré live.
-- Paramètres conservés dans l’URL (sol, caméra, rover).
+Grâce aux fallbacks, l’application reste consultable même sans clé (`VITE_DEMO_MODE=true`).
 
-### 3. Earth Imagery → GIBS
-- Tuiles WMTS/XYZ :
-  ```text
-  https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg3857/best/{LAYER}/default/{DATE}/{TILEMATRIXSET}/{Z}/{Y}/{X}.jpg
-  ```
-- Préconfiguré pour `VIIRS_SNPP_CorrectedReflectance_TrueColor` avec `GoogleMapsCompatible_Level9`.
-- Date paramétrable (`default` = meilleure dispo). Env vars :
-  ```env
-  GIBS_LAYER=VIIRS_SNPP_CorrectedReflectance_TrueColor
-  GIBS_DATE=default
-  GIBS_TILEMATRIXSET=GoogleMapsCompatible_Level9
-  ```
-
-### 4. DONKI / NEO / EPIC
-- Même pipeline `retry + fallback`.
-- `demoNeoHistory` reconstitue un feed synthétique (7 jours) pour garder les graphes (sparkline) animés.
-
----
-
-## 📁 Structure fonctionnelle
-```
-src/
-├─ api/            # client axios + retries + normalisation NASA
-├─ assets/         # placeholders SVG, logos, bruit
-├─ components/
-│  ├─ mission/     # MissionControlScene (Three.js + HUD)
-│  ├─ home/        # GuidedTour, ObservatoryConfigurator
-│  └─ ui/          # LoadingSpinner, ErrorState, etc.
-├─ layouts/        # MainLayout (bandeau offline + audio toggle)
-├─ pages/          # Vue pages (Home, APOD, Mars, NEO...)
-├─ stores/         # Pinia (favorites, status, observatory)
-└─ style.css       # Tokens globaux, animations, utilitaires
+### Build & preview
+```bash
+npm run build
+npm run preview
 ```
 
 ---
 
-## 🔌 Configuration & secrets
+## 7. Configuration (.env)
 
-Créer `.env.local` :
 ```env
-VITE_NASA_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+VITE_NASA_API_KEY=YOUR_KEY
+VITE_NASA_API_BASE=https://api.nasa.gov
+VITE_NASA_IMAGES_BASE=https://images-api.nasa.gov
 VITE_GIBS_LAYER=VIIRS_SNPP_CorrectedReflectance_TrueColor
 VITE_GIBS_DATE=default
 VITE_GIBS_TILEMATRIXSET=GoogleMapsCompatible_Level9
+VITE_DEMO_MODE=false
 ```
 
-Options supplémentaires :
-- `VITE_NASA_API_BASE` (par défaut `https://api.nasa.gov`)
-- `VITE_NASA_IMAGES_BASE` (`https://images-api.nasa.gov`)
-- `VITE_DEMO_MODE=true` force le mode hors-ligne.
+*Astuce :* passer `VITE_DEMO_MODE=true` pour tester la navigation hors-ligne.
 
 ---
 
-## 🧪 Tests & QA
+## 8. Architecture & technique
 
-1. `npm run dev` → vérifier le mode live (si clé NASA valide).
-2. Simuler une coupure réseau (`offline` sous DevTools) → bandeau “Service NASA en maintenance” + fallbacks visuels.
-3. MissionControl : vérifier la bascule audio, la rotation du globe, et le zoom responsive (desktop > 780px).
-4. Pages APOD/Mars : vérifier l’apparition du badge `Simulation` + placeholders.
-
-_(Suites recommandées : tests unitaires sur `withRetry`, store `status`; tests e2e sur la navigation fallback.)_
-
----
-
-## 🧊 Style & expérience
-
-- **Nav** : liens uppercase microtypés, underline néon animé, transition magnétique sur le logo.
-- **Hero** : anneau spectral rotatif, comète animée, grille conique.
-- **MissionControl** : scène 3D orbites, glow volumetric, shader océan.
-- **Placeholder** : illustrations SVG originales (APOD, Mars, Earth) coordonnées à la charte.
-- **Audio** : fond sonore synthétisé (drone + bruit cabine + bips) activable/désactivable via le bouton global.
-
----
-
-## 🔁 Scripts
-```bash
-npm install         # dépendances
-npm run dev         # serveur Vite + HMR
-npm run build       # build prod (vite build)
-npm run preview     # prévisualisation prod
+```
+src/
+├─ api/                # axios + retries + fallbacks (withCache, status store)
+├─ assets/placeholders # SVG simulation (APOD/Mars/Earth)
+├─ components/
+│  ├─ mission/         # MissionControlScene (Three.js + shaders)
+│  ├─ home/            # GuidedTour, ObservatoryConfigurator
+│  └─ ui/              # buttons, loaders, modal, error states
+├─ layouts/            # MainLayout (bandeau offline + audio toggle)
+├─ pages/              # Vue pages (Home, Apod, Mars, Epic, Neo, SpaceWeather, Earth, Favorites)
+├─ stores/             # Pinia (favorites, status, observatory)
+└─ style.css           # tokens globaux, animations, HUD neon
 ```
 
----
-
-## 📦 Commits / PRs
-
-- `feat(mission-control): upgrade 3d scene + presentation` — extension du globe et halo.
-- `feat(fallbacks): add demo datasets + status store` — résilience NASA.
-- `feat(ui): hero holographic layers + nav neon` — embellissement global.
-- `docs(readme): document nasa shutdown + gibs migration` — ce fichier.
-
-_(Conservez cette granularité dans vos PR : chaque feature visuelle/fallback isolée.)_
+- **AudioControl** : oscillateurs Web Audio (drone triangle + souffle cabine + bip télémétrie).
+- **Responsive nav** : bouton “MENU” 👉 panneau plein écran, liens stylés (`nav-link-mobile`).
+- **Three.js** : shaders custom (océan / city lights), orbites animées, trail dashed, parallax pointer.
+- **Animations** : `grid-shift`, `orb-drift`, `comet-streak`, `warp` transitions.
 
 ---
 
-## 🛠 Roadmap future
+## 9. Résilience & QA checklist
 
-- [ ] Intégration MapLibre pour afficher GIBS en direct (tuiles interactives).
-- [ ] Mode PhotoFrame : boucle plein écran (mission control + fond audio).
-- [ ] Automatisation tests `retry/fallback` avec MSW/Playwright.
-- [ ] Dock spatial interactif (déplaçable) pour composer son tableau de bord.
+| Domaine | Tests recommandés |
+|---------|-------------------|
+| Offline | DevTools « offline » → bandeau maintenance, images fallback. |
+| APOD | API key valide vs invalide → check badge `Simulation`. |
+| Mars | Date sans résultat → descente sol/date, placeholders. |
+| MissionControl | Responsive (< 768px) → bouton menu + caméra dézoomée. |
+| Audio | Toggle ON/OFF → drone + bip, arrêt propre. |
+| Build | `npm run build` → lint CSS/JS via Vite. |
+
+Potential e2e (Playwright) : mobile navigation, favorites CRUD.
 
 ---
 
-## 🙌 Crédit & licence
+## 10. Livrables & documentation
 
-- Données : NASA & ESA (domaine public, respect des guidelines NASA usage).
-- UI/UX : conçu pour être clonable dans Figma (tokens et classes documentées).
-- Licence : MIT.
+- ✅ **README (ce fichier)** : installation, usage, captures, techniques.
+- 🔜 **quickstart.pdf** : mini tutoriel « créer votre première page avec Vue 3 + Tailwind » (à livrer avec l’archive).
+- ✅ **Archive .zip** : inclure code complet, assets, README, quickstart.
 
-Bon voyage dans les étoiles 🌌
+Guides de démarrage utiles :
+- [Guide d’introduction de Vue](https://vuejs.org/guide/introduction.html)
+- [Vue SFC Playground](https://sfc.vuejs.org/)
+- [Guide aperçu de Svelte](https://svelte.dev/docs)
+- [Tutoriel « Votre première appli Svelte » (Alsacréations)](https://www.alsacreations.com/tuto/lire/1802-svelte-introduction-et-premiers-pas.html)
+
+---
+
+## 11. Évaluation (rappel)
+
+| Critère | Pondération | Comment nous y répondons |
+|---------|-------------|---------------------------|
+| Richesse & qualité du code | **/12** | Vue 3 + Pinia + Tailwind + Three.js, naming cohérent, commentaires ciblés, réactivité mobile. |
+| Documentation | **/8** | README illustré, sections claires, notation pédagogique, instructions précises. |
+| Total projet side | **20%** de la note finale | Reste : mini-projet final (30%) + DS 1h (50%) + bonus QCM (≤ +4 pts). |
+
+---
+
+## 12. Roadmap & extensions possibles
+
+- [ ] Intégration MapLibre pour visualiser en direct les tuiles GIBS.
+- [ ] Mode PhotoFrame pour kiosques (boucle MissionControl + audio ambiant).
+- [ ] Tests Playwright (`status` store, nav mobile).
+- [ ] Ajout d’un module “Guided tour” scripté (voix off + highlights).
+
+---
+
+## 13. Remerciements & licence
+
+- Données : NASA & partenaires (domaine public, respect des guidelines NASA usage).
+- Inspirations UI : HUD de centre de contrôle spatial, interfaces holographiques.
+- Licence : **MIT**.
+
+Bon voyage parmi les étoiles 🌌

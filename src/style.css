@@ -276,6 +276,42 @@ body::after {
   pointer-events: none;
 }
 
+.nav-link-mobile {
+  position: relative;
+  padding: 0.9rem 1.35rem;
+  border-radius: 22px;
+  border: 1px solid rgba(37, 99, 235, 0.45);
+  background: linear-gradient(130deg, rgba(3, 7, 18, 0.92), rgba(8, 47, 73, 0.8));
+  color: rgba(240, 253, 255, 0.98);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+.nav-link-mobile::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.92);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.75);
+}
+.nav-link-mobile:hover {
+  transform: translateX(8px);
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.45);
+  background: linear-gradient(130deg, rgba(5, 12, 32, 0.95), rgba(14, 116, 144, 0.8));
+}
+.nav-link-mobile.is-active {
+  border-color: rgba(34, 211, 238, 0.85);
+  box-shadow: 0 0 38px rgba(34, 211, 238, 0.5);
+  color: #5eead4;
+}
+
 .magnetic-area {
   position: relative;
   perspective: 900px;
