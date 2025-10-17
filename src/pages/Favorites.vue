@@ -8,7 +8,7 @@
       <div class="flex items-center gap-2">
         <button @click="exportJson" class="px-3 py-2 rounded bg-white/10 hover:bg-white/20">Exporter</button>
         <label class="px-3 py-2 rounded bg-white/10 hover:bg-white/20 cursor-pointer">
-          Importer<input type="file" class="hidden" accept="application/json" @change="importJson" />
+          Importer<input type="file" class="hidden" accept="application/json,image/*" @change="handleImport" />
         </label>
         <button @click="clear" class="px-3 py-2 rounded bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Tout effacer</button>
       </div>
@@ -44,10 +44,58 @@ function exportJson() {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a'); a.href = url; a.download = 'favorites.json'; a.click(); URL.revokeObjectURL(url)
 }
-function importJson(e) {
-  const file = e.target.files?.[0]; if (!file) return
-  const reader = new FileReader(); reader.onload = () => { try { fav.items = JSON.parse(reader.result); fav.save() } catch {} }
-  reader.readAsText(file)
+function handleImport(e) {
+  const input = e.target
+  const file = input.files?.[0]
+  if (!file) return
+
+  const resetInput = () => { input.value = '' }
+
+  if (file.type === 'application/json' || file.name.toLowerCase().endsWith('.json')) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result || '[]')
+        if (Array.isArray(parsed)) {
+          fav.items = parsed
+          fav.save()
+        } else {
+          window.alert('Le fichier JSON doit contenir une liste de favoris valide.')
+        }
+      } catch (err) {
+        window.alert('Impossible de lire ce fichier JSON.')
+      }
+      resetInput()
+    }
+    reader.readAsText(file)
+    return
+  }
+
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const id = `local:${Date.now()}`
+        const title = file.name.replace(/\.[^/.]+$/, '')
+        const date = new Date().toISOString().slice(0, 10)
+        fav.items.unshift({
+          id,
+          type: 'Image locale',
+          title: title || 'Image importée',
+          date,
+          thumb: reader.result,
+        })
+        fav.save()
+      } catch (err) {
+        window.alert('Impossible d’importer cette image.')
+      }
+      resetInput()
+    }
+    reader.readAsDataURL(file)
+    return
+  }
+
+  window.alert('Format de fichier non pris en charge. Veuillez sélectionner une image ou un fichier JSON.')
+  resetInput()
 }
 </script>
-

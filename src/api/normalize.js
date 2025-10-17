@@ -1,7 +1,6 @@
-// Games normalization
+// Normalisation des données de match provenant d’API hétérogènes
 export function normalizeGame(apiGame = {}) {
-  // Swagger example shape (lowercase, flat):
-  // { gameId, date, visitorTeam, visitorPts, homeTeam, homePts, ... }
+  // Les API peuvent exposer la date sous différents champs
   const rawDate = apiGame.date || apiGame.gameDate || apiGame.start_time || ''
   let iso = ''
   try { iso = typeof rawDate === 'string' ? rawDate : (new Date(rawDate)).toISOString() } catch { iso = '' }
@@ -21,7 +20,7 @@ export function normalizeGame(apiGame = {}) {
   const homeScore = apiGame.homePts ?? apiGame.homeScore ?? apiGame.home_points ?? null
   const awayScore = apiGame.visitorPts ?? apiGame.awayScore ?? apiGame.away_points ?? null
 
-  // infer status when not provided
+  // Déterminer un statut lisible même si la source ne fournit rien
   let status = 'scheduled'
   const now = Date.now()
   const t = Date.parse(iso)
@@ -42,9 +41,8 @@ export function normalizeGame(apiGame = {}) {
   }
 }
 
-// Player totals normalization (for list & leaders base)
+// Normalisation des totaux joueurs pour harmoniser les listings et classements
 export function normalizePlayerTotals(x = {}) {
-  // Swagger example shape: playerId, playerName, position, team (abbr), points, totalRb, assists, threePercent, threeFg, threeAttempts
   const name = x.playerName || x.player_name || `${x.firstName || ''} ${x.lastName || ''}`.trim()
   const teamAbbr = x.team || x.teamAbbr || x.team_abbr || x.team?.abbreviation || ''
   const fg3Pct = x.threePercent ?? x.fg3_pct ?? ((x.threeAttempts || x.fg3a) ? (Number(x.threeFg || x.fg3m) / Number(x.threeAttempts || x.fg3a)) : null)
@@ -63,7 +61,7 @@ export function normalizePlayerTotals(x = {}) {
   }
 }
 
-// Team normalization (from various sources)
+// Normalisation d’une fiche équipe quel que soit le fournisseur
 export function normalizeTeam(x = {}) {
   const team = x.team || x
   const conferenceRaw = (team.conference || x.conference || x.conf || '').toString().toLowerCase()
